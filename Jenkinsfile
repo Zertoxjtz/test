@@ -1,23 +1,34 @@
 pipeline {
-  agent any
-  tools {
-    maven 'Maven'
-  }
-  stages {
-    stage("build") {
-      steps {
-        sh 'mvn -v' 
-      }
+    agent any
+
+    tools {
+        maven 'Maven'
     }
-    stage("test") {
-      steps {
-        echo 'Running tests'
-      }
+
+    environment {
+        SONARQUBE_SERVER = 'SonarQube'
     }
-    stage("deploy") {
-      steps {
-        echo 'Deploying application'
-      }
+
+    stages {
+        stage("Build and Analyze") {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh 'mvn clean install sonar:sonar -Dsonar.projectKey=my-project-key'
+                }
+            }
+        }
+
+        stage("Quality Gate") {
+            steps {
+                script {
+                    timeout(time: 1, unit: 'MINUTES') {
+                        def qg = waitForQualityGate()
+                        if (qg.status != 'OK') {
+                            error "Pipeline failed due to Quality Gate: ${qg.status}"
+                        }
+                    }
+                }
+            }
+        }
     }
-  }
 }
