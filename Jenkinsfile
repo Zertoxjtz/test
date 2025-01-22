@@ -8,20 +8,19 @@ pipeline {
     stages {
         stage("build") {
             steps {
-                //sh 'talisman --scan'
-                echo 'test ?'
+                echo 'Building application...'
             }
         }
 
         stage("test") {
             steps {
-                echo 'Running tests'
+                echo 'Running tests...'
             }
         }
 
         stage("SonarQube Analysis") {
             steps {
-                withSonarQubeEnv('SonarQube') {
+                withSonarQubeEnv('Sonarqube') { // Utilise le nom configuré
                     sh 'mvn clean package sonar:sonar'
                 }
             }
@@ -29,7 +28,7 @@ pipeline {
 
         stage("deploy") {
             steps {
-                echo 'Deploying application'
+                echo 'Deploying application...'
             }
         }
     }
