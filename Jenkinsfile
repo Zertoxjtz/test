@@ -19,6 +19,14 @@ pipeline {
             }
         }
 
+        stage("SonarQube Analysis") {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh 'mvn clean package sonar:sonar'
+                }
+            }
+        }
+
         stage("deploy") {
             steps {
                 echo 'Deploying application'
