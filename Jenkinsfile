@@ -6,25 +6,29 @@ pipeline {
     }
 
     stages {
-        stage("Build") {
+        stage("build") {
             steps {
-                sh 'mvn clean package'
+                echo 'Building application...'
             }
         }
 
-        stage("SonarQube") {
+        stage("test") {
             steps {
-                script {
-                    withSonarQubeEnv('Sonarqube') {
-                        sh 'mvn clean package sonar:sonar'
-                    }
+                echo 'Running tests...'
+            }
+        }
+
+        stage("SonarQube Analysis") {
+            steps {
+                withSonarQubeEnv('Sonarqube') { // Utilise le nom configuré
+                    sh 'mvn clean package sonar:sonar'
                 }
             }
         }
 
-        stage('Clean Up') {
+        stage("deploy") {
             steps {
-                deleteDir()
+                echo 'Deploying application...'
             }
         }
     }
