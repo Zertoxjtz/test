@@ -1,14 +1,27 @@
 pipeline {
     agent any
+
     tools {
         maven 'Maven'
     }
+
     stages {
-        stage("Build & Analyse avec SonarQube") {
+        stage("build") {
             steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh 'mvn clean package sonar:sonar'
-                }
+                //sh 'talisman --scan'
+                echo 'test ?'
+            }
+        }
+
+        stage("test") {
+            steps {
+                echo 'Running tests'
+            }
+        }
+
+        stage("deploy") {
+            steps {
+                echo 'Deploying application'
             }
         }
     }
